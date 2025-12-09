@@ -1,1 +1,243 @@
-hola
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Laboratorio de Análisis Numérico</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div>
+        <h1>Laboratorio de Análisis Numérico</h1>
+        <p>Aplicación web con problemas prácticos de la vida real: finanzas, temperatura y movimiento.</p>
+      </div>
+      <div class="header-tag">
+        <span>Trabajo práctico</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <button type="button" class="nav-button active" data-section="section-roots">
+      <span class="nav-icon">💰</span>
+      <span>Tema 1: Finanzas (TIR)</span>
+    </button>
+    <button type="button" class="nav-button" data-section="section-interpolation">
+      <span class="nav-icon">🌡️</span>
+      <span>Tema 2: Temperatura</span>
+    </button>
+    <button type="button" class="nav-button" data-section="section-integration">
+      <span class="nav-icon">🚗</span>
+      <span>Tema 3: Movimiento</span>
+    </button>
+  </nav>
+
+  <main class="main">
+    <!-- TEMA 1: RAICES / TIR -->
+    <section id="section-roots" class="section visible">
+      <div class="section-header theme-finanzas">
+        <div>
+          <p class="section-kicker">Tema 1 · Raíces de ecuaciones</p>
+          <h2>Tasa Interna de Retorno de un proyecto (TIR)</h2>
+          <p>Compara los métodos de Bisección y Newton para calcular la rentabilidad de un proyecto de inversión a partir de sus flujos de caja.</p>
+        </div>
+        <div class="section-icon-circle theme-finanzas-bg">
+          💰
+        </div>
+      </div>
+
+      <div class="section-layout">
+        <div class="context-card theme-finanzas-soft">
+          <h3>Situación real</h3>
+          <p>Una empresa quiere saber qué tan rentable es un proyecto. Para eso calcula la TIR a partir de los flujos de caja anuales del proyecto.</p>
+          <ul class="context-list">
+            <li><strong>Entrada:</strong> flujos de caja por año (año 0, año 1, año 2, ...).</li>
+            <li><strong>Salida:</strong> TIR aproximada con Bisección y con Newton.</li>
+            <li><strong>Comparación:</strong> diferencia entre los métodos y cantidad de iteraciones.</li>
+          </ul>
+          <div class="steps-card">
+            <h4>Pasos rápidos</h4>
+            <ol>
+              <li>Escribe los flujos de caja separados por comas.</li>
+              <li>Elige un intervalo inicial para la TIR (por ejemplo 0 a 1).</li>
+              <li>Elige un valor inicial para Newton.</li>
+              <li>Haz clic en <strong>Calcular TIR</strong> y revisa la comparación.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Datos del proyecto de inversión</h3>
+          <div class="field-group">
+            <label for="cashflows">Flujos de caja (separados por coma, por ejemplo: -10000,3000,4000,5000)</label>
+            <input id="cashflows" type="text" placeholder="-10000,3000,4000,5000">
+          </div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label for="interval-a">Intervalo inicial a (TIR mínima)</label>
+              <input id="interval-a" type="number" step="0.0001" value="0.0">
+            </div>
+            <div class="field-group">
+              <label for="interval-b">Intervalo inicial b (TIR máxima)</label>
+              <input id="interval-b" type="number" step="0.0001" value="1.0">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field-group">
+              <label for="newton-x0">Punto inicial para Newton</label>
+              <input id="newton-x0" type="number" step="0.0001" value="0.1">
+            </div>
+            <div class="field-group">
+              <label for="tolerance-roots">Tolerancia</label>
+              <input id="tolerance-roots" type="number" step="0.000001" value="0.000001">
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="maxiter-roots">Máximo de iteraciones</label>
+            <input id="maxiter-roots" type="number" value="50">
+          </div>
+          <button type="button" id="btn-calc-roots" class="primary-button theme-finanzas-btn">Calcular TIR</button>
+        </div>
+      </div>
+
+      <div class="results">
+        <h3>Resultados y comparación</h3>
+        <div id="roots-summary" class="summary"></div>
+
+        <div class="grid-2">
+          <div>
+            <h4>Iteraciones del método de Bisección</h4>
+            <p class="helper-text">Se muestra cómo el intervalo se va cerrando hasta acercarse a la TIR.</p>
+            <div id="table-bisection" class="table-container"></div>
+          </div>
+          <div>
+            <h4>Iteraciones del método de Newton</h4>
+            <p class="helper-text">Se muestra cómo la aproximación se actualiza usando la derivada del VAN.</p>
+            <div id="table-newton" class="table-container"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEMA 2: INTERPOLACION -->
+    <section id="section-interpolation" class="section">
+      <div class="section-header theme-temperatura">
+        <div>
+          <p class="section-kicker">Tema 2 · Interpolación</p>
+          <h2>Estimación de temperatura en una hora intermedia</h2>
+          <p>A partir de mediciones reales de temperatura, compara la interpolación de Lagrange y la interpolación de Newton (diferencias divididas).</p>
+        </div>
+        <div class="section-icon-circle theme-temperatura-bg">
+          🌡️
+        </div>
+      </div>
+
+      <div class="section-layout">
+        <div class="context-card theme-temperatura-soft">
+          <h3>Situación real</h3>
+          <p>En una estación meteorológica se miden temperaturas a ciertas horas. Se quiere estimar la temperatura en una hora donde no se hizo medición.</p>
+          <ul class="context-list">
+            <li><strong>Entrada:</strong> puntos (hora, temperatura) medidos.</li>
+            <li><strong>Salida:</strong> valor interpolado con Lagrange y con Newton.</li>
+            <li><strong>Comparación:</strong> diferencia entre ambos resultados y coeficientes de Newton.</li>
+          </ul>
+          <div class="steps-card">
+            <h4>Pasos rápidos</h4>
+            <ol>
+              <li>Escribe cada punto en una línea con el formato <strong>x,y</strong> (por ejemplo: 8,10).</li>
+              <li>Indica la hora donde deseas estimar la temperatura.</li>
+              <li>Haz clic en <strong>Calcular interpolación</strong>.</li>
+              <li>Compara los resultados de Lagrange y Newton.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Datos de temperatura</h3>
+          <div class="field-group">
+            <label for="points-interpolation">Puntos (cada línea: x,y por ejemplo: 8,10)</label>
+            <textarea id="points-interpolation" rows="6" placeholder="8,10&#10;10,14&#10;12,18&#10;14,17"></textarea>
+          </div>
+          <div class="field-group">
+            <label for="x-eval">Valor x donde quieres estimar la temperatura</label>
+            <input id="x-eval" type="number" step="0.0001" value="11">
+          </div>
+          <button type="button" id="btn-calc-interpolation" class="primary-button theme-temperatura-btn">Calcular interpolación</button>
+        </div>
+      </div>
+
+      <div class="results">
+        <h3>Resultados y comparación</h3>
+        <div id="interp-summary" class="summary"></div>
+        <div class="grid-2">
+          <div>
+            <h4>Puntos medidos</h4>
+            <p class="helper-text">Tabla con las horas y temperaturas originales usadas para la interpolación.</p>
+            <div id="interp-points-table" class="table-container"></div>
+          </div>
+          <div>
+            <h4>Coeficientes de Newton</h4>
+            <p class="helper-text">Coeficientes del polinomio de diferencias divididas de Newton.</p>
+            <div id="interp-newton-coeff" class="table-container"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEMA 3: INTEGRACION -->
+    <section id="section-integration" class="section">
+      <div class="section-header theme-movimiento">
+        <div>
+          <p class="section-kicker">Tema 3 · Integración numérica</p>
+          <h2>Distancia recorrida a partir de datos de velocidad</h2>
+          <p>Dado un vehículo con velocidad medida cada cierto tiempo, compara la distancia aproximada con Trapecios y con Simpson 1/3.</p>
+        </div>
+        <div class="section-icon-circle theme-movimiento-bg">
+          🚗
+        </div>
+      </div>
+
+      <div class="section-layout">
+        <div class="context-card theme-movimiento-soft">
+          <h3>Situación real</h3>
+          <p>Un vehículo se mueve y se registran sus velocidades en distintos instantes de tiempo. Se desea aproximar la distancia total recorrida en ese intervalo.</p>
+          <ul class="context-list">
+            <li><strong>Entrada:</strong> pares (tiempo, velocidad) con paso de tiempo constante.</li>
+            <li><strong>Salida:</strong> distancia aproximada con Trapecios y con Simpson 1/3.</li>
+            <li><strong>Comparación:</strong> diferencia entre ambas aproximaciones.</li>
+          </ul>
+          <div class="steps-card">
+            <h4>Pasos rápidos</h4>
+            <ol>
+              <li>Escribe cada par tiempo,velocidad en una línea (por ejemplo: 0,0).</li>
+              <li>Asegúrate de que el paso de tiempo sea constante.</li>
+              <li>Haz clic en <strong>Calcular distancia</strong>.</li>
+              <li>Compara Trapecios y Simpson 1/3.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Datos de tiempo y velocidad</h3>
+          <div class="field-group">
+            <label for="points-integration">Datos (cada línea: tiempo,velocidad por ejemplo: 0,0)</label>
+            <textarea id="points-integration" rows="6" placeholder="0,0&#10;2,4&#10;4,7&#10;6,9&#10;8,10"></textarea>
+          </div>
+          <button type="button" id="btn-calc-integration" class="primary-button theme-movimiento-btn">Calcular distancia</button>
+        </div>
+      </div>
+
+      <div class="results">
+        <h3>Resultados y comparación</h3>
+        <div id="integration-summary" class="summary"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Aplicación web de análisis numérico con problemas prácticos de la vida real.</p>
+  </footer>
+</body>
+</html>
